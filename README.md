@@ -1,9 +1,10 @@
 # xf_demo
 
-讯飞-语音转文字
+科大讯飞-语音转文字-Flutter版demo
 
-本文档是根据讯飞语音听写的WebAPI文档编写的Flutter版demo
-https://www.xfyun.cn/doc/asr/voicedictation/API.html
+demo是根据讯飞语音听写的WebAPI编写的Flutter版demo
+官方文档地址:https://www.xfyun.cn/doc/asr/voicedictation/API.html
+源码地址:https://gitee.com/xiaobug/xf_demo
 
 场景比较简单,大家有需要的可以自行扩展
 
