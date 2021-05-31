@@ -10,7 +10,7 @@ import 'package:xf_demo/utils/xf_utils.dart';
 /// 作者: lijianbin
 /// 描述:
 class XfManage {
-  static const int frameSize = 1280;
+  static final  frameSize = 1280;
   static const int intervel = 40;
   static const statusFirstFrame = 0;
   static const statusContinueFrame = 1;
@@ -29,14 +29,16 @@ class XfManage {
 
   ///关闭连接
   close() {
-    print('关闭连接');
+    // print('关闭连接');
     _channel?.sink?.close();
   }
 
-  ///创建连接
+  /// 创建连接
+  /// data 需要转化的音频的字节数组
+  /// listen 转化完成后的回调
   XfManage.connect(this._host, this._apiKey, this._apiSecret, this._appId,
       List<int> data, void Function(String msg) listen) {
-    print('创建连接');
+    // print('创建连接');
     _channel?.sink?.close();
     _channel =
         IOWebSocketChannel.connect(getAuthUrl(_host, _apiKey, _apiSecret));

@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:xf_demo/utils/record_manage.dart';
+import 'package:xf_demo/utils/mic_manage.dart';
 import 'package:xf_demo/utils/xf_manage.dart';
 
 void main() {
@@ -39,7 +39,7 @@ class _WsWidgetPageState extends State<WsWidgetPage> {
 
   @override
   void dispose() {
-    _xf.close();
+    _xf?.close();
     super.dispose();
   }
 

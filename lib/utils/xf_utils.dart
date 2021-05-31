@@ -17,6 +17,7 @@ String getAuthUrl(String host, String apiKey, String apiSecret) {
   final authorizationOrigin =
       'api_key="$apiKey", algorithm="hmac-sha256", headers="host date request-line", signature="$signature"';
   final authorization = base64.encode(authorizationOrigin.codeUnits);
+  //对日期进行uri编码
   date = Uri.encodeComponent(date);
   final url =
       'wss://$host/v2/iat?authorization=$authorization&date=$date&host=$host';
@@ -27,7 +28,7 @@ String getAuthUrl(String host, String apiKey, String apiSecret) {
 String _hmacSha256Base64(String message, String secret) {
   List<int> messageBytes = utf8.encode(message);
   List<int> secretBytes = utf8.encode(secret);
-  Hmac hmac = new Hmac(sha256, secretBytes);
+  Hmac hmac = Hmac(sha256, secretBytes);
   Digest digest = hmac.convert(messageBytes);
   return base64.encode(digest.bytes);
 }

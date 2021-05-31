@@ -13,6 +13,7 @@ class MicRecord {
   static StreamSubscription<List<int>> _listener;
   static List<int> _currentSamples = List();
 
+  ///获取录音生成的字节数组
   static currentSamples() => _currentSamples;
 
   ///开始录音
@@ -22,8 +23,11 @@ class MicRecord {
         !await Permission.microphone.request().isGranted) {
       return false;
     }
+    //清空缓存
     _currentSamples.clear();
     if (_isRecording) return false;
+
+    //开始录音
     _stream = await MicStream.microphone(
       audioSource: AudioSource.DEFAULT,
       channelConfig: ChannelConfig.CHANNEL_IN_MONO,
