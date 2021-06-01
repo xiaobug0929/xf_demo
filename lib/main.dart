@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:xf_demo/utils/mic_manage.dart';
 import 'package:xf_demo/utils/xf_manage.dart';
@@ -27,6 +26,7 @@ const host = 'iat-api.xfyun.cn';
 const appId = 'xxx';
 const apiKey = 'xxx';
 const apiSecret = 'xxx';
+
 
 class WsWidgetPage extends StatefulWidget {
   @override
@@ -73,18 +73,18 @@ class _WsWidgetPageState extends State<WsWidgetPage> {
     );
   }
 
-  connect() {
+  connect() async {
+    MicRecord.stopListening();
     setState(() {
       _msg = '录音停止,正在语音转文字...';
     });
 
-    MicRecord.stopListening();
     _xf = XfManage.connect(
       host,
       apiKey,
       apiSecret,
       appId,
-      MicRecord.currentSamples(),
+      await MicRecord.currentSamples(),
       (msg) {
         setState(() {
           _msg = '语音转文字完成: \r\n$msg';

@@ -13,11 +13,11 @@ dependencies:
   web_socket_channel:
   mic_stream:
   permission_handler:
+  flutter_ffmpeg:
+  path_provider:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 flutter:
   uses-material-design: true
-  assets:
-    - assets/

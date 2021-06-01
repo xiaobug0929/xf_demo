@@ -10,7 +10,7 @@ import 'package:xf_demo/utils/xf_utils.dart';
 /// 作者: lijianbin
 /// 描述:
 class XfManage {
-  static final  frameSize = 1280;
+  static final frameSize = 1280;
   static const int intervel = 40;
   static const statusFirstFrame = 0;
   static const statusContinueFrame = 1;
@@ -29,7 +29,7 @@ class XfManage {
 
   ///关闭连接
   close() {
-    // print('关闭连接');
+    log('关闭连接');
     _channel?.sink?.close();
   }
 
@@ -38,7 +38,7 @@ class XfManage {
   /// listen 转化完成后的回调
   XfManage.connect(this._host, this._apiKey, this._apiSecret, this._appId,
       List<int> data, void Function(String msg) listen) {
-    // print('创建连接');
+    log('创建连接');
     _channel?.sink?.close();
     _channel =
         IOWebSocketChannel.connect(getAuthUrl(_host, _apiKey, _apiSecret));
@@ -57,7 +57,7 @@ class XfManage {
 
     //识别失败
     if (resp.code != 0) {
-      print('code:${resp.code} error:${resp.message} sid:${resp.sid}');
+      log('code:${resp.code} error:${resp.message} sid:${resp.sid}');
       return;
     }
     if (resp.data != null) {
@@ -65,14 +65,14 @@ class XfManage {
       if (resp.data.result != null) {
         final msg = resp.data.result.getMessage();
         _decoder.decode(msg);
-        // print('中间识别结果:$_decoder');
+        log('中间识别结果:$_decoder');
       }
 
       //说明数据全部返回完毕，可以关闭连接，释放资源
       if (resp.data.status == 2) {
         // _end = DateTime.now();
-        // print('总共耗时:${_end.difference(_start).inMilliseconds}');
-        // print('最终识别结果:$_decoder');
+        // log('总共耗时:${_end.difference(_start).inMilliseconds}');
+        log('最终识别结果:$_decoder');
         listen(_decoder.toString());
         _decoder.discard();
       }
@@ -82,6 +82,9 @@ class XfManage {
   ///语音转文字
   _translate(List<int> bytes) {
     // _start = DateTime.now();
+    if (!(bytes is Uint8List)) {
+      bytes = Uint8List.fromList(bytes);
+    }
     int count = 0;
     final l = bytes.length % frameSize;
     if (l > 0) {
@@ -89,7 +92,7 @@ class XfManage {
     } else {
       count = bytes.length ~/ frameSize;
     }
-    // print('count = $count');
+    log('count = $count');
     for (int i = 0; i < count; i++) {
       List<int> len;
       if (i == count - 1) {
@@ -101,7 +104,7 @@ class XfManage {
       if (len.isEmpty) {
         msg = '';
       } else {
-        msg = base64.encode(Uint8List.fromList(len));
+        msg = base64.encode(len);
       }
 
       //第一帧和中间帧
@@ -141,8 +144,8 @@ class XfManage {
         frame['business'] = business;
         frame['data'] = data;
         _sendMessage(json.encode(frame));
-        status = statusContinueFrame; // 发送完第一帧改变status 为 1
-        // print('send first');
+        _status = statusContinueFrame; // 发送完第一帧改变status 为 1
+        log('send first');
         break;
 
       case statusContinueFrame: //中间帧status = 1
@@ -154,7 +157,7 @@ class XfManage {
         data1['audio'] = msg;
         frame1['data'] = data1;
         _sendMessage(json.encode(frame1));
-        // print('send continue');
+        log('send continue');
         break;
 
       case statusLastFrame: // 最后一帧音频status = 2 ，标志音频发送结束
@@ -166,9 +169,9 @@ class XfManage {
         data2['audio'] = '';
         frame2['data'] = data2;
         _sendMessage(json.encode(frame2));
-        // print('send last');
-        status = statusFirstFrame;
-        // print('所有数据都已发送');
+        log('send last');
+        _status = statusFirstFrame;
+        log('所有数据都已发送');
         break;
     }
   }
@@ -207,5 +210,14 @@ class Decoder {
   ///丢弃
   void discard() {
     this.msgs.clear();
+  }
+}
+
+bool isDebug = false;
+
+///日志
+log(dynamic msg) {
+  if (isDebug) {
+    print('$msg');
   }
 }
